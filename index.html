@@ -1,301 +1,64 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Calculator</title>
+    <title>My Calculators</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #e9edf5;
             font-family: Arial, sans-serif;
-        }
-
-        .calculator {
-            width: 320px;
-            padding: 22px;
-            background: #202938;
-            border-radius: 22px;
-            box-shadow: 0 12px 30px #0003;
-        }
-
-        h2 {
-            color: white;
+            background: #f1f5f9;
             text-align: center;
-            margin: 0 0 18px;
-            font-size: 20px;
+            padding: 50px 20px;
         }
 
-        #display {
-            width: 100%;
-            height: 75px;
-            margin-bottom: 18px;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: #f8fafc;
-            color: #172033;
-            text-align: right;
-            font-size: 30px;
-            outline: none;
+        .container {
+            max-width: 500px;
+            margin: auto;
         }
 
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        button {
-            height: 55px;
-            border: none;
+        .card {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
             border-radius: 12px;
-            background: #364357;
+            box-shadow: 0 4px 12px #00000010;
+        }
+
+        a {
+            display: inline-block;
+            background: #2563eb;
             color: white;
-            font-size: 20px;
-            cursor: pointer;
-            transition: background 0.15s, transform 0.1s;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
         }
 
-        button:hover {
-            background: #4a5a72;
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
-
-        .operator {
-            background: #e99a37;
-            color: #172033;
-        }
-
-        .operator:hover {
-            background: #ffb84d;
-        }
-
-        .utility {
-            background: #53647c;
-        }
-
-        .equals {
-            background: #28a879;
-            grid-column: span 2;
-        }
-
-        .equals:hover {
-            background: #35c392;
+        a:hover {
+            background: #1d4ed8;
         }
     </style>
 </head>
 
 <body>
+    <div class="container">
+        <h1>My Calculators</h1>
+        <p>Choose a calculator to get started.</p>
 
-    <div class="calculator">
-        <h2>My Calculator</h2>
+        <div class="card">
+            <h2>Simple Calculator</h2>
+            <p>For everyday calculations.</p>
+            <a href="simple-calculator/">Open Calculator</a>
+        </div>
 
-        <input id="display" type="text" value="0"
-               readonly aria-label="Calculator display">
-
-        <div class="buttons">
-            <button class="utility" onclick="clearDisplay()">AC</button>
-            <button class="utility" onclick="deleteLast()">DEL</button>
-            <button class="utility" onclick="percentage()">%</button>
-            <button class="operator" onclick="chooseOperator('/')">÷</button>
-
-            <button onclick="appendNumber('7')">7</button>
-            <button onclick="appendNumber('8')">8</button>
-            <button onclick="appendNumber('9')">9</button>
-            <button class="operator" onclick="chooseOperator('*')">×</button>
-
-            <button onclick="appendNumber('4')">4</button>
-            <button onclick="appendNumber('5')">5</button>
-            <button onclick="appendNumber('6')">6</button>
-            <button class="operator" onclick="chooseOperator('-')">−</button>
-
-            <button onclick="appendNumber('1')">1</button>
-            <button onclick="appendNumber('2')">2</button>
-            <button onclick="appendNumber('3')">3</button>
-            <button class="operator" onclick="chooseOperator('+')">+</button>
-
-            <button onclick="appendNumber('0')">0</button>
-            <button onclick="appendDecimal()">.</button>
-            <button class="equals" onclick="calculate()">=</button>
+        <div class="card">
+            <h2>Scientific Calculator</h2>
+            <p>For advanced mathematical calculations.</p>
+            <a href="scientific-calculator/">Open Calculator</a>
         </div>
     </div>
-
-    <script>
-        const display = document.getElementById("display");
-
-        let current = "0";
-        let previous = null;
-        let operator = null;
-        let resetNext = false;
-
-        function updateDisplay() {
-            display.value = current;
-        }
-
-        function appendNumber(number) {
-            if (current === "Error" || resetNext) {
-                current = number;
-                resetNext = false;
-            } else if (current === "0") {
-                current = number;
-            } else if (current.length < 15) {
-                current += number;
-            }
-
-            updateDisplay();
-        }
-
-        function appendDecimal() {
-            if (current === "Error" || resetNext) {
-                current = "0.";
-                resetNext = false;
-            } else if (!current.includes(".")) {
-                current += ".";
-            }
-
-            updateDisplay();
-        }
-
-        function chooseOperator(nextOperator) {
-            if (current === "Error") return;
-
-            if (operator !== null && !resetNext) {
-                calculate();
-            }
-
-            previous = Number(current);
-            operator = nextOperator;
-            resetNext = true;
-        }
-
-        function calculate() {
-            if (operator === null || previous === null) return;
-
-            const a = previous;
-            const b = Number(current);
-            let result;
-
-            switch (operator) {
-                case "+":
-                    result = a + b;
-                    break;
-                case "-":
-                    result = a - b;
-                    break;
-                case "*":
-                    result = a * b;
-                    break;
-                case "/":
-                    if (b === 0) {
-                        current = "Error";
-                        operator = null;
-                        previous = null;
-                        resetNext = true;
-                        updateDisplay();
-                        return;
-                    }
-                    result = a / b;
-                    break;
-            }
-
-            if (!Number.isFinite(result)) {
-                current = "Error";
-            } else {
-                current = String(Number(result.toPrecision(12)));
-            }
-
-            operator = null;
-            previous = null;
-            resetNext = true;
-            updateDisplay();
-        }
-
-        function clearDisplay() {
-            current = "0";
-            previous = null;
-            operator = null;
-            resetNext = false;
-            updateDisplay();
-        }
-
-        function deleteLast() {
-            if (current === "Error" || resetNext) {
-                current = "0";
-                resetNext = false;
-            } else {
-                current = current.length > 1
-                    ? current.slice(0, -1)
-                    : "0";
-
-                if (current === "-") current = "0";
-            }
-
-            updateDisplay();
-        }
-
-        function percentage() {
-            if (current === "Error") return;
-
-            current = String(Number(current) / 100);
-            resetNext = true;
-            updateDisplay();
-        }
-        
-document.addEventListener("keydown", function(event) {
-    const key = event.key;
-
-    // Number keys
-    if (key >= "0" && key <= "9") {
-        appendNumber(key);
-    }
-
-    // Decimal point
-    else if (key === ".") {
-        appendDecimal();
-    }
-
-    // Arithmetic operators
-    else if (["+", "-", "*", "/"].includes(key)) {
-        chooseOperator(key);
-    }
-
-    // Calculate result
-    else if (key === "Enter" || key === "=") {
-        event.preventDefault();
-        calculate();
-    }
-
-    // Clear calculator
-    else if (key === "Escape") {
-        clearDisplay();
-    }
-
-    // Delete last digit
-    else if (key === "Backspace") {
-        deleteLast();
-    }
-
-    // Percentage
-    else if (key === "%") {
-        percentage();
-    }
-});
-
-    </script>
-
 </body>
 </html>
+```
